@@ -136,3 +136,8 @@ export const deleteEnrollment = async (id) => {
   const response = await api.delete(`/enrollments/${id}`);
   return response.data;
 };
+
+export const getStudentGrades = async () => {
+  const response = await api.get('/student/grades');
+  return response.data;
+};

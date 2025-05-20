@@ -1,12 +1,13 @@
 // src/App.jsx
-import React, { useContext } from 'react';
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthContext } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import RegisterStudent from './pages/RegisterStudent';
 import Login from './pages/Login';
 import StudentDashboard from './pages/student/Dashboard';
 import Enroll from './pages/student/Enroll';
+import GradesPage from './pages/student/GradesPage'; // New
 import InstructorDashboard from './pages/instructor/Dashboard';
 import AdminDashboard from './pages/admin/Dashboard';
 import RegisterUsers from './pages/admin/RegisterUsers';
@@ -23,14 +24,14 @@ import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   if (!user) return <Navigate to="/login" />;
   if (allowedRoles && !allowedRoles.includes(user.role)) return <Navigate to="/not-found" />;
   return children;
 };
 
 const PublicRoute = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   if (user) {
     const dashboardPath = {
       student: '/student/dashboard',
@@ -97,6 +98,23 @@ function App() {
                   <Navbar />
                   <main className="flex-1 p-6">
                     <Enroll />
+                  </main>
+                  <Footer />
+                </div>
+              </div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/student/grades"
+          element={
+            <ProtectedRoute allowedRoles={['student']}>
+              <div className="flex min-h-screen">
+                <Sidebar />
+                <div className="flex-1 flex flex-col">
+                  <Navbar />
+                  <main className="flex-1 p-6">
+                    <GradesPage />
                   </main>
                   <Footer />
                 </div>

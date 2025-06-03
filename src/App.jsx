@@ -22,7 +22,8 @@ import NotFound from './pages/NotFound';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
-
+import InstructorAssignments from './pages/instructor/Assignments'; // To be created
+import InstructorGrades from './pages/instructor/Grades'; // To be created
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" />;
@@ -139,6 +140,33 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/instructor/assignments" element={
+          <ProtectedRoute allowedRoles={['instructor']}>
+            <div className="flex min-h-screen">
+              <Sidebar />
+              <div className="flex-1 flex flex-col">
+                <Navbar />
+                <main className="flex-1 p-6">
+                  <InstructorAssignments /> 
+                </main>
+                <Footer />
+              </div>
+            </div>
+          </ProtectedRoute>} />
+        <Route path="/instructor/grades" 
+        element={
+            <ProtectedRoute allowedRoles={['instructor']}>
+              <div className="flex min-h-screen">
+                <Sidebar />
+                <div className="flex-1 flex flex-col">
+                  <Navbar />
+                  <main className="flex-1 p-6">
+                  <InstructorGrades />                  </main>
+                  <Footer />
+                </div>
+              </div>
+            </ProtectedRoute>} 
+            />
         <Route
           path="/admin/dashboard"
           element={

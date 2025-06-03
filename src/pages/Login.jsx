@@ -1,29 +1,18 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { Toaster, toast } from 'react-hot-toast'; // Fixed: Use Toaster
+import { Toaster, toast } from 'react-hot-toast';
 
 function Login() {
-  const { login, user } = useAuth();
-  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
-
-  // Redirect logged-in users to their dashboard
-  if (user) {
-    const dashboardPath = {
-      student: '/student/dashboard',
-      instructor: '/instructor/dashboard',
-      admin: '/admin/dashboard',
-    }[user.role];
-    navigate(dashboardPath);
-  }
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -34,15 +23,12 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const decoded = await login(formData.email, formData.password);
+      console.log('Submitting login form:', { email: formData.email }); // Debug
+      await login(formData.email, formData.password);
+      console.log('Login successful'); // Debug
       toast.success('Logged in successfully!');
-      const dashboardPath = {
-        student: '/student/dashboard',
-        instructor: '/instructor/dashboard',
-        admin: '/admin/dashboard',
-      }[decoded.role];
-      navigate(dashboardPath);
     } catch (error) {
+      console.error('Login form error:', error.message); // Debug
       setError(error.message || 'Invalid email or password');
       toast.error(error.message || 'Login failed');
     }
@@ -108,7 +94,7 @@ function Login() {
         </div>
       </div>
       <Footer />
-      <Toaster position="top-right" toastOptions={{ duration: 5000 }} /> {/* Fixed: Use Toaster */}
+      <Toaster position="top-right" toastOptions={{ duration: 5000 }} />
     </div>
   );
 }

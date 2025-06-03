@@ -1,16 +1,26 @@
 // src/components/Navbar.jsx
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
+
+  const handleLogout = async () => {
+    try {
+      console.log('Logout clicked'); // Debug
+      await logout();
+      console.log('Logout successful'); // Debug
+    } catch (error) {
+      console.error('Logout error in Navbar:', error.message); // Debug
+    }
+  };
 
   const getNavItems = () => {
     const commonItems = [
@@ -80,7 +90,7 @@ function Navbar() {
           ))}
           {user ? (
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="bg-white text-blue-700 hover:bg-gray-100 font-semibold py-2 px-4 rounded text-lg"
             >
               Logout
@@ -112,7 +122,7 @@ function Navbar() {
             ))}
             {user ? (
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 className="px-4 py-2 text-lg font-semibold text-blue-700 bg-white rounded hover:bg-gray-100"
               >
                 Logout

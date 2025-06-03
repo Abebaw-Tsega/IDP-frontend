@@ -1,28 +1,25 @@
-// src/pages/instructor/Dashboard.jsx
+// src/pages/instructor/Grades.jsx
 import React, { useState, useEffect } from 'react';
 import { getCourseAssignments, getEnrollmentsByCourse, getGradeByEnrollment, submitGrade } from '../../services/api';
 import toast from 'react-hot-toast';
 
-const InstructorDashboard = () => {
+const InstructorGrades = () => {
   const [courses, setCourses] = useState([]);
   const [enrollments, setEnrollments] = useState({});
   const [grades, setGrades] = useState({});
   const [loading, setLoading] = useState(true);
 
-  // Fetch assigned courses
-  const fetchCourses = async () => {
+  const fetchCoursesAndEnrollments = async () => {
     try {
       const assignedCourses = await getCourseAssignments();
       setCourses(assignedCourses);
 
-      // Fetch enrollments and grades for each course
       const enrollmentsData = {};
       const gradesData = {};
       for (const course of assignedCourses) {
         const courseEnrollments = await getEnrollmentsByCourse(course.course_id);
         enrollmentsData[course.course_id] = courseEnrollments;
 
-        // Fetch existing grades for each enrollment
         for (const enrollment of courseEnrollments) {
           const gradeData = await getGradeByEnrollment(enrollment.enrollment_id);
           gradesData[enrollment.enrollment_id] = gradeData.grade || '';
@@ -39,10 +36,9 @@ const InstructorDashboard = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchCoursesAndEnrollments();
   }, []);
 
-  // Handle grade submission
   const handleGradeSubmit = async (enrollmentId) => {
     const grade = grades[enrollmentId];
     if (!grade || grade.trim() === '') {
@@ -59,7 +55,6 @@ const InstructorDashboard = () => {
     }
   };
 
-  // Handle grade input change
   const handleGradeChange = (enrollmentId, value) => {
     setGrades((prev) => ({
       ...prev,
@@ -73,8 +68,7 @@ const InstructorDashboard = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-6">Instructor Dashboard</h1>
-
+      <h1 className="text-2xl font-bold mb-6">Grade Students</h1>
       {courses.length === 0 ? (
         <p className="text-gray-600">No courses assigned to you.</p>
       ) : (
@@ -83,7 +77,6 @@ const InstructorDashboard = () => {
             <h2 className="text-xl font-semibold mb-4">
               {course.course_code} - {course.course_name} ({course.semester} {course.academic_year})
             </h2>
-
             {enrollments[course.course_id]?.length > 0 ? (
               <table className="w-full border-collapse bg-white shadow rounded-lg">
                 <thead>
@@ -130,4 +123,4 @@ const InstructorDashboard = () => {
   );
 };
 
-export default InstructorDashboard;
+export default InstructorGrades;

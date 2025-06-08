@@ -5,7 +5,7 @@ import {
   getDepartments, updateDepartment, deleteDepartment,
   getCourses, updateCourse, deleteCourse,
   getEnrollments, updateEnrollment, deleteEnrollment,
-  getCourseAssignments, updateCourseAssignment, deleteCourseAssignment
+  getAllCourseAssignments, updateCourseAssignment, deleteCourseAssignment
 } from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -20,8 +20,9 @@ function ViewDatabase() {
     const fetchData = async () => {
       try {
         const [users, departments, courses, enrollments, courseAssignments] = await Promise.all([
-          getUsers(), getDepartments(), getCourses(), getEnrollments(), getCourseAssignments(),
+          getUsers(), getDepartments(), getCourses(), getEnrollments(), getAllCourseAssignments(),
         ]);
+        console.log('Course Assignments Data:', courseAssignments); // Debug log
         setData({ users, departments, courses, enrollments, courseAssignments });
       } catch (error) {
         toast.error('Error fetching database: ' + error.message);
@@ -31,6 +32,7 @@ function ViewDatabase() {
   }, []);
 
   const toEthiopianCalendar = (gregorianDate) => {
+    if (!gregorianDate) return 'N/A';
     const date = new Date(gregorianDate);
     const gcYear = date.getFullYear();
     const gcMonth = date.getMonth() + 1;
@@ -70,9 +72,8 @@ function ViewDatabase() {
       }
       toast.success(`${tabId} updated successfully`);
       setEditItem(null);
-      // Refresh data
       const [users, departments, courses, enrollments, courseAssignments] = await Promise.all([
-        getUsers(), getDepartments(), getCourses(), getEnrollments(), getCourseAssignments(),
+        getUsers(), getDepartments(), getCourses(), getEnrollments(), getAllCourseAssignments(),
       ]);
       setData({ users, departments, courses, enrollments, courseAssignments });
     } catch (error) {
@@ -101,9 +102,8 @@ function ViewDatabase() {
           break;
       }
       toast.success(`${tabId} deleted successfully`);
-      // Refresh data
       const [users, departments, courses, enrollments, courseAssignments] = await Promise.all([
-        getUsers(), getDepartments(), getCourses(), getEnrollments(), getCourseAssignments(),
+        getUsers(), getDepartments(), getCourses(), getEnrollments(), getAllCourseAssignments(),
       ]);
       setData({ users, departments, courses, enrollments, courseAssignments });
     } catch (error) {
@@ -259,7 +259,11 @@ function ViewDatabase() {
       data: data.courseAssignments,
       columns: [
         { key: 'assignment_id', label: 'ID' },
-        { key: 'instructor_name', label: 'Instructor' },
+        {
+          key: 'instructor_name',
+          label: 'Instructor',
+          render: (item) => item.instructor_name ? `${item.instructor_name} ${item.instructor_last_name || ''}`.trim() : 'N/A'
+        },
         { key: 'course_name', label: 'Course' },
         {
           key: 'created_at',

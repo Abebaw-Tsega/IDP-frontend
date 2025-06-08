@@ -41,23 +41,23 @@ function AdminDashboard() {
     <div>
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white   p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Users</h2>
           <p className="text-2xl">{stats.users}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white  p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Departments</h2>
           <p className="text-2xl">{stats.departments}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white  p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Courses</h2>
           <p className="text-2xl">{stats.courses}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white  p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Enrollments</h2>
           <p className="text-2xl">{stats.enrollments}</p>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className="bg-white  p-4 rounded-lg shadow">
           <h2 className="text-lg font-semibold">Assignments</h2>
           <p className="text-2xl">{stats.assignments}</p>
         </div>

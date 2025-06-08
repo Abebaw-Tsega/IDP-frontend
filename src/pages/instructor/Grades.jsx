@@ -8,17 +8,24 @@ const InstructorGrades = () => {
   const [enrollments, setEnrollments] = useState({});
   const [grades, setGrades] = useState({});
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchCoursesAndEnrollments = async () => {
     try {
       const assignedCourses = await getCourseAssignments();
+      if (!assignedCourses || assignedCourses.length === 0) {
+        setCourses([]);
+        setLoading(false);
+        return;
+      }
+
       setCourses(assignedCourses);
 
       const enrollmentsData = {};
       const gradesData = {};
       for (const course of assignedCourses) {
         const courseEnrollments = await getEnrollmentsByCourse(course.course_id);
-        enrollmentsData[course.course_id] = courseEnrollments;
+        enrollmentsData[course.course_id] = courseEnrollments || [];
 
         for (const enrollment of courseEnrollments) {
           const gradeData = await getGradeByEnrollment(enrollment.enrollment_id);
@@ -29,7 +36,8 @@ const InstructorGrades = () => {
       setGrades(gradesData);
     } catch (error) {
       console.error('Error fetching data:', error);
-      // toast.error('Failed to load courses and enrollments');
+      setError('Failed to load courses and enrollments');
+      toast.error('Failed to load courses and enrollments');
     } finally {
       setLoading(false);
     }
@@ -66,6 +74,10 @@ const InstructorGrades = () => {
     return <div className="p-4">Loading...</div>;
   }
 
+  if (error) {
+    return <div className="p-4 text-red-500">{error}</div>;
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-6">Grade Students</h1>
@@ -90,7 +102,7 @@ const InstructorGrades = () => {
                 <tbody>
                   {enrollments[course.course_id].map((enrollment) => (
                     <tr key={enrollment.enrollment_id}>
-                      <td className="border p-2">{`${enrollment.first_name} ${enrollment.last_name}`}</td>
+                      <td className="border p-2">{enrollment.first_name}</td>
                       <td className="border p-2">{enrollment.email}</td>
                       <td className="border p-2">
                         <input

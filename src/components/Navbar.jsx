@@ -39,8 +39,8 @@ function Navbar() {
       instructor: [{ path: '/instructor/dashboard', label: 'Instructor Dashboard' }],
       admin: [
         { path: '/admin/dashboard', label: 'Admin Dashboard' },
-        { path: '/admin/register-users', label: 'Register Users' },
-        { path: '/admin/view-database', label: 'View Database' },
+        // { path: '/admin/register-users', label: 'Register Users' },
+        // { path: '/admin/view-database', label: 'View Database' },
       ],
     };
 

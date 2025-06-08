@@ -1,11 +1,12 @@
 // src/pages/instructor/Assignments.jsx
 import React, { useState, useEffect } from 'react';
 import { getCourseAssignments } from '../../services/api';
-// import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const InstructorAssignments = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchCourses = async () => {
     try {
@@ -13,7 +14,8 @@ const InstructorAssignments = () => {
       setCourses(assignedCourses);
     } catch (error) {
       console.error('Error fetching courses:', error);
-      // toast.error('Failed to load assigned courses');
+      setError('Failed to load assigned courses');
+      toast.error('Failed to load assigned courses');
     } finally {
       setLoading(false);
     }
@@ -25,6 +27,10 @@ const InstructorAssignments = () => {
 
   if (loading) {
     return <div className="p-4">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">{error}</div>;
   }
 
   return (

@@ -18,7 +18,9 @@ function AssignInstructor() {
           getInstructors(),
           getCourses(),
         ]);
-        setInstructors(instructorData);
+        // Filter instructors by role
+        const filteredInstructors = instructorData.filter(instructor => instructor.role === 'instructor');
+        setInstructors(filteredInstructors);
         setCourses(courseData);
       } catch (error) {
         toast.error('Error fetching data: ' + error.message);

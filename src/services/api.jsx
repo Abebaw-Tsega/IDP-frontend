@@ -9,13 +9,12 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    // console.log('Request with token:', `Bearer ${token.substring(0, 20)}...`, config.url); // Debug
   } else {
-    console.log('No token for request:', config.url); // Debug
+    console.log('No token for request:', config.url);
   }
   return config;
 }, (error) => {
-  console.error('Request interceptor error:', error); // Debug
+  console.error('Request interceptor error:', error);
   return Promise.reject(error);
 });
 
@@ -46,10 +45,12 @@ export const logout = () => {
 
 export const registerUser = async (data) => {
   try {
+    console.log('Register user data:', data); // Log sent data
     const response = await api.post(`/register/${data.role}`, data);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Registration failed');
+    const errorMsg = error.response?.data?.errors?.[0]?.msg || error.response?.data?.error || 'Registration failed';
+    throw new Error(errorMsg);
   }
 };
 
@@ -119,10 +120,17 @@ export const createCourseAssignment = async (data) => {
 };
 
 export const getCourseAssignments = async () => {
-  const response = await api.get('/course-assignments');
-  return response.data;
+    const response = await api.get('/course-assignments/my-assignments');
+    console.log('Course assignments response:', response.data); // Add this
+    return response.data;
+  
 };
 
+export const getAllCourseAssignments = async () => {
+  const response = await api.get('/course-assignments'); // New endpoint for all assignments
+  console.log('All course assignments response:', response.data); // Debug log
+  return response.data;
+};
 export const updateCourseAssignment = async (id, data) => {
   const response = await api.put(`/course-assignments/${id}`, data);
   return response.data;
@@ -158,10 +166,7 @@ export const getStudentGrades = async () => {
   return response.data;
 };
 
-// export const getCourseAssignments = async () => {
-//   const response = await api.get('/course-assignments');
-//   return response.data;
-// };
+
 
 export const getEnrollmentsByCourse = async (courseId) => {
   const response = await api.get(`/enrollments/course/${courseId}`);
